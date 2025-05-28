@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Василий Веркин](https://up.htmlacademy.ru/javascript-individual/2/user/2092395).
-* Наставник: `Неизвестно`.
+* Наставник: [Никита Сигов](https://htmlacademy.ru/profile/crazer).
 
 ---
 
