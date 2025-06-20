@@ -17,6 +17,7 @@ const DESCRIPTIONS = [
 const NAMES = ['Анна', 'Владимир', 'Николай', 'Ксения', 'Иван'];
 
 const PICTURES_COUNT = 25;
+const AVATARS_COUNT = 6;
 const MIN_LIKES = 15;
 const MAX_LIKES = 200;
 const MIN_COMMENTS = 0;
@@ -29,32 +30,24 @@ const getRandomPositiveInteger = (a, b) => {
   return Math.floor(result);
 };
 
-const getRandomArrayElement = (array) => array[getRandomPositiveInteger(0, array.length - 1)];
+const getRandomArrayElement = (array) =>
+  array[getRandomPositiveInteger(0, array.length - 1)];
 
-const createMessage = (array) => {
-  const messagesLength = getRandomPositiveInteger(1, 2);
-  const messages = [];
-  for (let messageIndex = 0; messageIndex < messagesLength; messageIndex++) {
-    messages.push(getRandomArrayElement(array));
-  }
-  return messages.join(' ');
-};
+const createMessage = () =>
+  Array.from({ length: getRandomPositiveInteger(1, 2) }, () =>
+    getRandomArrayElement(MESSAGES)).join(' ');
 
 const createComment = (commentIndex) => ({
   id: commentIndex,
-  avatar: `img/avatar-${getRandomPositiveInteger(1, 6)}.svg`,
-  message: createMessage(MESSAGES),
+  avatar: `img/avatar-${getRandomPositiveInteger(1, AVATARS_COUNT)}.svg`,
+  message: createMessage(),
   name: getRandomArrayElement(NAMES),
 });
 
-const getComments = () => {
-  const commentsCount = getRandomPositiveInteger(MIN_COMMENTS, MAX_COMMENTS);
-  const comments = [];
-  for (let commentIndex = 0; commentIndex < commentsCount; commentIndex++) {
-    comments.push(createComment(commentIndex + 1));
-  }
-  return comments;
-};
+const getComments = () =>
+  Array.from({ length: getRandomPositiveInteger(MIN_COMMENTS, MAX_COMMENTS) },
+    (_, commentIndex) => createComment(commentIndex + 1)
+  );
 
 const createPicture = (pictureIndex) => ({
   id: pictureIndex,
@@ -64,12 +57,9 @@ const createPicture = (pictureIndex) => ({
   comments: getComments(),
 });
 
-const getPictures = () => {
-  const arr = [];
-  for (let pictureIndex = 0; pictureIndex < PICTURES_COUNT; pictureIndex++) {
-    const picture = createPicture(pictureIndex + 1);
-    arr.push(picture);
-  }
-  return arr;
-};
-getPictures();
+const getPictures = () =>
+  Array.from({ length: PICTURES_COUNT }, (_, pictureIndex) =>
+    createPicture(pictureIndex + 1)
+  );
+
+console.log(getPictures());
