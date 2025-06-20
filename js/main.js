@@ -35,7 +35,8 @@ const getRandomArrayElement = (array) =>
 
 const createMessage = () =>
   Array.from({ length: getRandomPositiveInteger(1, 2) }, () =>
-    getRandomArrayElement(MESSAGES)).join(' ');
+    getRandomArrayElement(MESSAGES)
+  ).join(' ');
 
 const createComment = (commentIndex) => ({
   id: commentIndex,
@@ -44,17 +45,12 @@ const createComment = (commentIndex) => ({
   name: getRandomArrayElement(NAMES),
 });
 
-const getComments = () =>
-  Array.from({ length: getRandomPositiveInteger(MIN_COMMENTS, MAX_COMMENTS) },
-    (_, commentIndex) => createComment(commentIndex + 1)
-  );
-
 const createPicture = (pictureIndex) => ({
   id: pictureIndex,
   url: `photos/${pictureIndex}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomPositiveInteger(MIN_LIKES, MAX_LIKES),
-  comments: getComments(),
+  comments: Array.from({length: getRandomPositiveInteger(MIN_COMMENTS, MAX_COMMENTS) }, (_, commentIndex) => createComment(commentIndex + 1)),
 });
 
 const getPictures = () =>
