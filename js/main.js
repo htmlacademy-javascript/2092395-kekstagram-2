@@ -1,3 +1,5 @@
+import { userPictures } from './pictures.js';
 import { getPictures } from './data.js';
 
-console.log(getPictures());
+userPictures();
+getPictures();
