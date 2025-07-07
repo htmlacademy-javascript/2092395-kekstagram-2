@@ -1,4 +1,4 @@
-import { getRandomPositiveInteger, getRandomArrayElement } from './unit.js';
+import { getRandomPositiveInteger, getRandomArrayElement } from './util.js';
 
 const MESSAGES = [
   'Всё отлично!',
