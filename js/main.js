@@ -1,5 +1,5 @@
-import { userPictures } from './pictures.js';
+import { renderPictures } from './pictures.js';
 import { getPictures } from './data.js';
 
-userPictures();
-getPictures();
+
+renderPictures(getPictures());

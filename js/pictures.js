@@ -1,21 +1,31 @@
-import { getPictures } from './data.js';
+import { showBigPicture } from './big-picture.js';
 
 const picturesContainer = document.querySelector('.pictures');
 const picturesTemplate = document.querySelector('#picture').content.querySelector('.picture');
-const userPictures = getPictures();
 const picturesFragment = document.createDocumentFragment();
 
-userPictures.forEach(({ url, description, comments, likes}) => {
-  const pictureElement = picturesTemplate.cloneNode(true);
-  const image = pictureElement.querySelector('.picture__img');
-  image.src = url;
-  image.alt = description;
-  pictureElement.querySelector('.picture__comments').textContent = comments.length;
-  pictureElement.querySelector('.picture__likes').textContent = likes;
+const renderPictures = (pictures) => {
+  pictures.forEach(({ id, url, description, comments, likes}) => {
+    const pictureElement = picturesTemplate.cloneNode(true);
+    pictureElement.dataset.pictureId = id;
+    const image = pictureElement.querySelector('.picture__img');
+    image.src = url;
+    image.alt = description;
+    pictureElement.querySelector('.picture__comments').textContent = comments.length;
+    pictureElement.querySelector('.picture__likes').textContent = likes;
 
-  picturesFragment.appendChild(pictureElement);
+    picturesFragment.appendChild(pictureElement);
+  });
+
+  picturesContainer.append(picturesFragment);
+};
+
+picturesContainer.addEventListener('click', (evt) => {
+  const currentPicture = evt.target.closest('.picture');
+  if (currentPicture) {
+    showBigPicture(currentPicture.dataset.pictureId);
+  }
 });
 
-picturesContainer.append(picturesFragment);
 
-export { userPictures };
+export { renderPictures };
