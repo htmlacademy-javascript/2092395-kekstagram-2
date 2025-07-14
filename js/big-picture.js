@@ -1,4 +1,3 @@
-import { getPictures } from './data.js';
 import { isEscapeKey } from './util.js';
 
 const bigPicture = document.querySelector('.big-picture');
@@ -11,17 +10,16 @@ const commentsCount = bigPicture.querySelector('.social__comment-count');
 const commentsLoader = bigPicture.querySelector('.social__comments-loader');
 const bigPictureCancel = document.querySelector('.big-picture__cancel');
 const body = document.querySelector('body');
-const photos = getPictures().slice();
 
-const showBigPicture = (pictureId) => {
-  const currentPhoto = photos.find((photo) => photo.id === Number(pictureId));
+const showBigPicture = (photo) => {
   const socialCommentsFragment = document.createDocumentFragment();
 
-  bigPictureImage.src = currentPhoto.url;
-  likesCount.textContent = currentPhoto.likes;
+  bigPictureImage.src = photo.url;
+  likesCount.textContent = photo.likes;
   socialComments.innerHTML = '';
 
-  currentPhoto.comments.forEach((comment) => {
+  // Используем photo.comments
+  photo.comments.forEach((comment) => {
     const socialComment = socialCommentTemplate.cloneNode(true);
     socialComment.querySelector('.social__picture').src = comment.avatar;
     socialComment.querySelector('.social__picture').alt = comment.name;
@@ -32,7 +30,8 @@ const showBigPicture = (pictureId) => {
 
   socialComments.appendChild(socialCommentsFragment);
 
-  commentsCaption.textContent = currentPhoto.description;
+  // Используем photo.description
+  commentsCaption.textContent = photo.description;
   commentsCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
 
@@ -60,4 +59,4 @@ const onCancelButtonClick = () => {
 
 bigPictureCancel.addEventListener('click', onCancelButtonClick);
 
-export { showBigPicture, hideBigPicture };
+export { showBigPicture };
