@@ -1,39 +1,22 @@
 import { isEscapeKey } from './util.js';
+import { clearComments, renderComments } from './render-comments.js';
 
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureImage = bigPicture.querySelector('.big-picture__img').querySelector('img');
-const likesCount = bigPicture.querySelector('.likes-count');
-const socialComments = bigPicture.querySelector('.social__comments');
-const socialCommentTemplate = socialComments.querySelector('.social__comment');
+const likesCount = bigPicture.querySelector('.social__likes .likes-count');
+// const likesCount = bigPicture.querySelector('.likes-count');
 const commentsCaption = bigPicture.querySelector('.social__caption');
-const commentsCount = bigPicture.querySelector('.social__comment-count');
-const commentsLoader = bigPicture.querySelector('.social__comments-loader');
 const bigPictureCancel = document.querySelector('.big-picture__cancel');
+const bigPictureOverlay = document.querySelector('.overlay');
 const body = document.querySelector('body');
 
 const showBigPicture = (photo) => {
-  const socialCommentsFragment = document.createDocumentFragment();
 
   bigPictureImage.src = photo.url;
   likesCount.textContent = photo.likes;
-  socialComments.innerHTML = '';
-
-  // Используем photo.comments
-  photo.comments.forEach((comment) => {
-    const socialComment = socialCommentTemplate.cloneNode(true);
-    socialComment.querySelector('.social__picture').src = comment.avatar;
-    socialComment.querySelector('.social__picture').alt = comment.name;
-    socialComment.querySelector('.social__text').textContent = comment.message;
-
-    socialCommentsFragment.appendChild(socialComment);
-  });
-
-  socialComments.appendChild(socialCommentsFragment);
-
-  // Используем photo.description
   commentsCaption.textContent = photo.description;
-  commentsCount.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
+
+  renderComments(photo.comments);
 
   bigPicture.classList.remove('hidden');
   body.classList.add('modal-open');
@@ -41,6 +24,7 @@ const showBigPicture = (photo) => {
 };
 
 const hideBigPicture = () => {
+  clearComments(); // Важно: очищаем комментарии и сбрасываем состояние
   bigPicture.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onEscKeyDown);
@@ -53,10 +37,13 @@ function onEscKeyDown(evt) {
   }
 }
 
-const onCancelButtonClick = () => {
-  hideBigPicture();
-};
-
-bigPictureCancel.addEventListener('click', onCancelButtonClick);
+bigPictureOverlay.addEventListener('click', (evt) => {
+  const target = evt.target;
+  // Проверяем, что target - это formOverlay или крестик
+  if (target === bigPictureOverlay || target === bigPictureCancel) {
+    // Если да, вызываем ф-ю закрытия модального окна
+    hideBigPicture();
+  }
+});
 
 export { showBigPicture };
