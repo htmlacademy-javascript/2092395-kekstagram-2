@@ -2,9 +2,8 @@ import { isEscapeKey } from './util.js';
 import { clearComments, renderComments } from './render-comments.js';
 
 const bigPicture = document.querySelector('.big-picture');
-const bigPictureImage = bigPicture.querySelector('.big-picture__img').querySelector('img');
+const bigPictureImage = bigPicture.querySelector('.big-picture__img img');
 const likesCount = bigPicture.querySelector('.social__likes .likes-count');
-// const likesCount = bigPicture.querySelector('.likes-count');
 const commentsCaption = bigPicture.querySelector('.social__caption');
 const bigPictureCancel = document.querySelector('.big-picture__cancel');
 const bigPictureOverlay = document.querySelector('.overlay');
@@ -24,7 +23,7 @@ const showBigPicture = (photo) => {
 };
 
 const hideBigPicture = () => {
-  clearComments(); // Важно: очищаем комментарии и сбрасываем состояние
+  clearComments();
   bigPicture.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onEscKeyDown);
@@ -39,9 +38,7 @@ function onEscKeyDown(evt) {
 
 bigPictureOverlay.addEventListener('click', (evt) => {
   const target = evt.target;
-  // Проверяем, что target - это formOverlay или крестик
   if (target === bigPictureOverlay || target === bigPictureCancel) {
-    // Если да, вызываем ф-ю закрытия модального окна
     hideBigPicture();
   }
 });

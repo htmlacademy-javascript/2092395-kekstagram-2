@@ -4,7 +4,7 @@ let comments = [];
 
 const bigPicture = document.querySelector('.big-picture');
 const socialComments = bigPicture.querySelector('.social__comments');
-const socialCommentTemplate = socialComments.querySelector('.social__comment').cloneNode(true); // Клонируем шаблон заранее
+const socialCommentTemplate = socialComments.querySelector('.social__comment').cloneNode(true);
 const commentsCount = bigPicture.querySelector('.social__comment-count');
 const commentsLoader = bigPicture.querySelector('.social__comments-loader');
 
@@ -45,7 +45,7 @@ const clearComments = () => {
   commentsLoader.removeEventListener('click', renderNextComments); // Удаляем старый обработчик
 };
 
-// Основная функция рендера комментариев
+// Функция рендера комментариев
 const renderComments = (currentPhotoComments) => {
   comments = currentPhotoComments;
   clearComments(); // Сбрасываем состояние перед новым рендером
