@@ -1,40 +1,21 @@
-import { getPictures } from './data.js';
 import { isEscapeKey } from './util.js';
+import { clearComments, renderComments } from './render-comments.js';
 
 const bigPicture = document.querySelector('.big-picture');
-const bigPictureImage = bigPicture.querySelector('.big-picture__img').querySelector('img');
-const likesCount = bigPicture.querySelector('.likes-count');
-const socialComments = bigPicture.querySelector('.social__comments');
-const socialCommentTemplate = socialComments.querySelector('.social__comment');
+const bigPictureImage = bigPicture.querySelector('.big-picture__img img');
+const likesCount = bigPicture.querySelector('.social__likes .likes-count');
 const commentsCaption = bigPicture.querySelector('.social__caption');
-const commentsCount = bigPicture.querySelector('.social__comment-count');
-const commentsLoader = bigPicture.querySelector('.social__comments-loader');
 const bigPictureCancel = document.querySelector('.big-picture__cancel');
+const bigPictureOverlay = document.querySelector('.overlay');
 const body = document.querySelector('body');
-const photos = getPictures().slice();
 
-const showBigPicture = (pictureId) => {
-  const currentPhoto = photos.find((photo) => photo.id === Number(pictureId));
-  const socialCommentsFragment = document.createDocumentFragment();
+const showBigPicture = (photo) => {
 
-  bigPictureImage.src = currentPhoto.url;
-  likesCount.textContent = currentPhoto.likes;
-  socialComments.innerHTML = '';
+  bigPictureImage.src = photo.url;
+  likesCount.textContent = photo.likes;
+  commentsCaption.textContent = photo.description;
 
-  currentPhoto.comments.forEach((comment) => {
-    const socialComment = socialCommentTemplate.cloneNode(true);
-    socialComment.querySelector('.social__picture').src = comment.avatar;
-    socialComment.querySelector('.social__picture').alt = comment.name;
-    socialComment.querySelector('.social__text').textContent = comment.message;
-
-    socialCommentsFragment.appendChild(socialComment);
-  });
-
-  socialComments.appendChild(socialCommentsFragment);
-
-  commentsCaption.textContent = currentPhoto.description;
-  commentsCount.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
+  renderComments(photo.comments);
 
   bigPicture.classList.remove('hidden');
   body.classList.add('modal-open');
@@ -42,6 +23,7 @@ const showBigPicture = (pictureId) => {
 };
 
 const hideBigPicture = () => {
+  clearComments();
   bigPicture.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onEscKeyDown);
@@ -54,10 +36,11 @@ function onEscKeyDown(evt) {
   }
 }
 
-const onCancelButtonClick = () => {
-  hideBigPicture();
-};
+bigPictureOverlay.addEventListener('click', (evt) => {
+  const target = evt.target;
+  if (target === bigPictureOverlay || target === bigPictureCancel) {
+    hideBigPicture();
+  }
+});
 
-bigPictureCancel.addEventListener('click', onCancelButtonClick);
-
-export { showBigPicture, hideBigPicture };
+export { showBigPicture };
