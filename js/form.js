@@ -3,7 +3,6 @@ import { openModal, closeModal, setupModalClose } from './modal-control.js';
 const uploadForm = document.querySelector('.img-upload__form'); // Получили форму загрузки изображения
 const uploadFileInput = document.querySelector('#upload-file'); // Получили элемент загрузки фотографии
 const overlay = document.querySelector('.img-upload__overlay'); // Получили overlay
-const uploadInputWrapper = document.querySelector('img-upload__text text');
 const hashtagInput = document.querySelector('.text__hashtags'); // Получили поле ввода хэштегов
 const commentInput = document.querySelector('.text__description'); // Получили поле ввода комментариев
 
@@ -27,6 +26,16 @@ const cancelButton = document.querySelector('#upload-cancel');
 const showModal = () => {
   openModal(overlay);
 };
+
+// Обработка Esc при фокусе в полях ввода
+const onInputEscKeyDown = (evt) => {
+  if (evt.key === 'Escape') {
+    evt.stopPropagation();
+  }
+};
+
+hashtagInput.addEventListener('keydown', onInputEscKeyDown);
+commentInput.addEventListener('keydown', onInputEscKeyDown);
 
 // Функция закрывает модальное окно по клику на overlay или кнопку закрыть.
 setupModalClose(overlay, cancelButton, () => {// 3-м параметром передаем колбэк с очисткой формы и сбрасыванием данных поля загрузки фото.
