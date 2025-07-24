@@ -3,13 +3,15 @@ import { openModal, closeModal, setupModalClose } from './modal-control.js';
 const uploadForm = document.querySelector('.img-upload__form'); // Получили форму загрузки изображения
 const uploadFileInput = document.querySelector('#upload-file'); // Получили элемент загрузки фотографии
 const overlay = document.querySelector('.img-upload__overlay'); // Получили overlay
+const uploadInputWrapper = document.querySelector('img-upload__text text');
 const hashtagInput = document.querySelector('.text__hashtags'); // Получили поле ввода хэштегов
-
+const commentInput = document.querySelector('.text__description'); // Получили поле ввода комментариев
 
 const MAX_HASHTAG_COUNT = 5;
 const MIN_HASHTAG_LENGTH = 2;
 const MAX_HASHTAG_LENGTH = 20;
 const UNVALID_SYMBOLS = /[^a-zA-Z0-9а-яА-ЯёЁ]/g;
+const MAX_COMMENT_LENGTH = 140;
 
 // В библиотеку передаем форму, вторым параметром описываем настройки ошибок
 const pristine = new Pristine(uploadForm, {
@@ -103,27 +105,41 @@ const validateTags = (value) => {
   return isValid;
 };
 
+const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
+
 const getErrorMessages = () => {
   // Убираем дубликаты ошибок
   const uniqueErrors = [...new Set(currentErrors)];
-  return uniqueErrors.join('. ');
+  return uniqueErrors.join(' и ');
 };
 
-// Регистрируем валидатор с кастомными сообщениями
+// Добавляем валидатор хэштегов с кастомными сообщениями
 pristine.addValidator(
   hashtagInput,
   validateTags,
   getErrorMessages
 );
 
-// Валидация при вводе
+// Добавляем валидатор для комментария
+pristine.addValidator(
+  commentInput,
+  validateComment,
+  `Длина комментария не может быть больше ${MAX_COMMENT_LENGTH} символов`
+);
+
+// Вешаем обработчик события на поле ввода хэштега
 hashtagInput.addEventListener('input', () => {
   pristine.validate();
 });
+// Вешаем обработчик события на поле ввода комментария
+commentInput.addEventListener('input', () => {
+  pristine.validate();
+});
 
-// Обработчик отправки формы
+// Обработчик отправки формы при валидных данных
 uploadForm.addEventListener('submit', (evt) => {
-  if (!pristine.validate()) {
+  const isValid = pristine.validate();
+  if (!isValid) {
     evt.preventDefault();
   }
 });
