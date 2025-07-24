@@ -27,15 +27,14 @@ const showModal = () => {
   openModal(overlay);
 };
 
-// Обработка Esc при фокусе в полях ввода
-const onInputEscKeyDown = (evt) => {
-  if (evt.key === 'Escape') {
-    evt.stopPropagation();
+// Вешаем на форму обработчик событий для отмены закрытия формы при нажатии Esc если поля ввода хэштега или комментария активны
+uploadForm.addEventListener('keydown', (evt) => {
+  if (evt.target === hashtagInput || evt.target === commentInput) {
+    if (evt.key === 'Escape') {
+      evt.stopPropagation();
+    }
   }
-};
-
-hashtagInput.addEventListener('keydown', onInputEscKeyDown);
-commentInput.addEventListener('keydown', onInputEscKeyDown);
+});
 
 // Функция закрывает модальное окно по клику на overlay или кнопку закрыть.
 setupModalClose(overlay, cancelButton, () => {// 3-м параметром передаем колбэк с очисткой формы и сбрасыванием данных поля загрузки фото.
@@ -136,13 +135,11 @@ pristine.addValidator(
   `Длина комментария не может быть больше ${MAX_COMMENT_LENGTH} символов`
 );
 
-// Вешаем обработчик события на поле ввода хэштега
-hashtagInput.addEventListener('input', () => {
-  pristine.validate();
-});
-// Вешаем обработчик события на поле ввода комментария
-commentInput.addEventListener('input', () => {
-  pristine.validate();
+// Вешаем обработчик события на форму для отслеживания ввода хэштега или комментария
+uploadForm.addEventListener('input', (evt) => {
+  if (evt.target === hashtagInput || evt.target === commentInput) {
+    pristine.validate();
+  }
 });
 
 // Обработчик отправки формы при валидных данных
