@@ -32,12 +32,13 @@ function onEscKeyDown(evt) {
 
 // Общая функция для закрытия по клику на overlay или крестик
 // closeParam - колбэк с особенностью закрытия модального окна (form.reset() или clearComments)
-const setupModalClose = (modalElement, closeButton) => {
+const setupModalClose = (modalElement, closeButton, closeParam) => {
   modalElement.addEventListener('click', (evt) => {
     const target = evt.target;
     // Проверяем, что клик был по overlay или крестику
     if (target === modalElement || target === closeButton) {
       closeModal(modalElement); // Закрываем модалку
+      closeParam();
     }
   });
 };

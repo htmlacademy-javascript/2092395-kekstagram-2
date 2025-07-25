@@ -10,6 +10,7 @@ const MAX_HASHTAG_COUNT = 5;
 const MIN_HASHTAG_LENGTH = 2;
 const MAX_HASHTAG_LENGTH = 20;
 const UNVALID_SYMBOLS = /[^a-zA-Z0-9а-яА-ЯёЁ]/g;
+const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i; // Проверяет весь хэштег целиком
 const MAX_COMMENT_LENGTH = 140;
 
 // В библиотеку передаем форму, вторым параметром описываем настройки ошибок
