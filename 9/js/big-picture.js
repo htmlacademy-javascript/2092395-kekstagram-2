@@ -19,6 +19,7 @@ const showBigPicture = (photo) => {
   openModal(bigPicture);
 };
 
+
 setupModalClose(bigPicture, bigPictureCancel, () => {
   clearComments(); // Очищаем комментарии перед закрытием
   closeModal(bigPicture); // Закрываем модалку
