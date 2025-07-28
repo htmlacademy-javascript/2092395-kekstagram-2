@@ -1,6 +1,11 @@
 import { isEscapeKey } from './util.js';
 
 const body = document.querySelector('body');
+const hashtagInput = document.querySelector('.text__hashtags');
+const commentInput = document.querySelector('.text__description');
+const commentInputBigPicture = document.querySelector('.social__footer-text');
+
+
 // Ф-я открывает модальное окно, котороее передано как параметр
 const openModal = (modalElement) => {
   // удаляем класс hidden у переданного элемента
@@ -21,9 +26,30 @@ const closeModal = (modalElemen) => {
 // Ф-я закрывает модальное окно при нажатии Esc
 function onEscKeyDown(evt) {
   if (isEscapeKey(evt)) { // Проверяем, нажатая кнопка это Esc
+    const activeElement = document.activeElement;
+    // Проверяем какое модальное окно активно
+    const bigPictureModal = document.querySelector('.big-picture:not(.hidden)');
+    const uploadForm = document.querySelector('.img-upload__overlay:not(.hidden)');
+    // Для формы: не закрывать если фокус в поле комментария
+    if (uploadForm) {
+      // Находим активные инпуты
+      const isInputFocused = activeElement === hashtagInput || activeElement === commentInput;
+
+      if (isInputFocused) {
+        return;
+      }
+    }
+
+    // Для просмотра фото: не закрывать если фокус в поле комментария
+    if (bigPictureModal) {
+      const isCommentFocused = activeElement === commentInputBigPicture;
+      if (isCommentFocused) {
+        return;
+      }
+    }
+
     evt.preventDefault();
-    // Ищем любое открытое модальное окно (без класса hidden)
-    const activeModal = document.querySelector('.big-picture:not(.hidden), .img-upload__overlay:not(.hidden)');
+    const activeModal = bigPictureModal || uploadForm;
     if (activeModal) {
       closeModal(activeModal);
     }

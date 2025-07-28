@@ -7,7 +7,6 @@ const bigPictureImage = bigPicture.querySelector('.big-picture__img img');
 const likesCount = bigPicture.querySelector('.social__likes .likes-count');
 const commentsCaption = bigPicture.querySelector('.social__caption');
 const bigPictureCancel = document.querySelector('.big-picture__cancel');
-const commentInput = document.querySelector('.social__footer-text');
 
 const showBigPicture = (photo) => {
 
@@ -24,7 +23,6 @@ const showBigPicture = (photo) => {
 setupModalClose(bigPicture, bigPictureCancel, () => {
   clearComments(); // Очищаем комментарии перед закрытием
   closeModal(bigPicture); // Закрываем модалку
-  commentInput.innerHTML = '';
 });
 
 export { showBigPicture };
