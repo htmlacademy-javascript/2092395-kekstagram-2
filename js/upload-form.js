@@ -10,28 +10,11 @@ const overlay = document.querySelector('.img-upload__overlay'); // Получи�
 const hashtagInput = document.querySelector('.text__hashtags'); // Получили поле ввода хэштегов
 const commentInput = document.querySelector('.text__description'); // Получили поле ввода комментариев
 
-
 // В библиотеку передаем форму, вторым параметром описываем настройки ошибок
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextClass: 'img-upload__field-wrapper--error',
-});
-
-// Получили кнопку закрытия формы
-const cancelButton = document.querySelector('#upload-cancel');
-
-// Функция открывает форму после загрузки фотографии
-const showModal = () => {
-  uploadFileInput.value = '';
-  openModal(overlay);
-};
-
-// Функция закрывает модальное окно по клику на overlay или кнопку закрыть.
-setupModalClose(overlay, cancelButton, () => {// 3-м параметром передаем колбэк с очисткой формы и сбрасыванием данных поля загрузки фото.
-  uploadForm.reset(); // Сбрасываем форму перед закрытием
-  pristine.reset(); // Сбрасываем валидацию
-  closeModal(overlay); // Закрываем модалку
 });
 
 // Создаем объект с сообщениями об ошибках
@@ -43,9 +26,35 @@ const hashtagErrors = {
 
 const currentErrors = []; // Создаем пустой массив для добавления ошибок
 
+// Получили кнопку закрытия формы
+const cancelButton = document.querySelector('#upload-cancel');
+
+// Функция открывает форму после загрузки фотографии
+const showModal = () => {
+  uploadFileInput.value = '';
+  openModal(overlay);
+};
+
+// Вешаем на форму обработчик событий для отмены закрытия формы при нажатии Esc если поля ввода хэштега или комментария активны
+uploadForm.addEventListener('keydown', (evt) => {
+  if (evt.target === hashtagInput || evt.target === commentInput) {
+    if (evt.key === 'Escape') {
+      evt.stopPropagation();
+    }
+  }
+});
+
+// Функция закрывает модальное окно по клику на overlay или кнопку закрыть.
+setupModalClose(overlay, cancelButton, uploadForm, () => {// 3-м параметром передаем колбэк с очисткой формы и сбрасыванием данных поля загрузки фото.
+  uploadForm.reset(); // Сбрасываем форму перед закрытием
+  pristine.reset(); // Сбрасываем валидацию
+  closeModal(overlay); // Закрываем модалку
+});
+
 // Функция проверяет, является ли строка с тегами (value) валидной
 const validateTags = (value) => {
-  currentErrors.length = 0; // Обнуляем мвссив после каждой проверки
+  currentErrors.length = []; // Обнуляем мвссив после каждой проверки
+  // Подготавливаем теги для проверки
   const tags = value
     .toLowerCase()// Переводит символы в нижний регистр
     .trim() // убирает пробелы в начале и конце строки
@@ -61,31 +70,24 @@ const validateTags = (value) => {
   }
 
   // Проверка уникальности
-  const lowerCaseTags = tags.map((tag) => tag);
-  if (lowerCaseTags.length !== new Set(lowerCaseTags).size) {
+  if (tags.length !== new Set(tags).size) {
     currentErrors.push(hashtagErrors.unique);
     isValid = false;
   }
 
   // Проверка каждого хэштега
-  tags.forEach((tag) => {
-    const validTags = VALID_SYMBOLS.test(tag);
-    if (!validTags) {
-      currentErrors.push(hashtagErrors.invalid);
-      isValid = false;
-    }
-  });
+  const isValidTags = tags.every((tag) => VALID_SYMBOLS.test(tag));
+  if (!isValidTags) {
+    currentErrors.push(hashtagErrors.invalid);
+    isValid = false;
+  }
 
   return isValid;
 };
 
 const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
 
-const getErrorMessages = () => {
-  // Убираем дубликаты ошибок
-  const uniqueErrors = [...new Set(currentErrors)];
-  return uniqueErrors.join(' и ');
-};
+const getErrorMessages = () => currentErrors.join(' и ');
 
 // Добавляем валидатор хэштегов с кастомными сообщениями
 pristine.addValidator(
@@ -103,9 +105,7 @@ pristine.addValidator(
 
 // Вешаем обработчик события на форму для отслеживания ввода хэштега или комментария
 uploadForm.addEventListener('input', (evt) => {
-  if (evt.target === hashtagInput || evt.target === commentInput) {
-    pristine.validate();
-  }
+  pristine.validate(evt.target);
 });
 
 // Обработчик отправки формы при валидных данных
