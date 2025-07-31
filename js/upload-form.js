@@ -1,4 +1,5 @@
 import { openModal, closeModal, setupModalClose } from './modal-control.js';
+import { resetScale } from './scale.js';
 
 const MAX_HASHTAG_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i; // Проверяет весь хэштег целиком
@@ -31,14 +32,16 @@ const cancelButton = document.querySelector('#upload-cancel');
 
 // Функция открывает форму после загрузки фотографии
 const showModal = () => {
+  resetScale();
   pristine.reset(); // Сбрасываем валидацию
   openModal(overlay);
 };
 
 // Функция закрывает модальное окно по клику на overlay или кнопку закрыть.
-setupModalClose(overlay, cancelButton, uploadForm, () => {// 3-м параметром передаем колбэк с очисткой формы и сбрасыванием данных поля загрузки фото.
+setupModalClose(overlay, cancelButton, () => {// 3-м параметром передаем колбэк с очисткой формы и сбрасыванием данных поля загрузки фото.
   uploadForm.reset(); // Сбрасываем форму перед закрытием
   pristine.reset(); // Сбрасываем валидацию
+  resetScale();
   closeModal(overlay); // Закрываем модалку
 });
 
