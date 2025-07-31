@@ -31,18 +31,9 @@ const cancelButton = document.querySelector('#upload-cancel');
 
 // Функция открывает форму после загрузки фотографии
 const showModal = () => {
-  uploadFileInput.value = '';
+  pristine.reset(); // Сбрасываем валидацию
   openModal(overlay);
 };
-
-// Вешаем на форму обработчик событий для отмены закрытия формы при нажатии Esc если поля ввода хэштега или комментария активны
-uploadForm.addEventListener('keydown', (evt) => {
-  if (evt.target === hashtagInput || evt.target === commentInput) {
-    if (evt.key === 'Escape') {
-      evt.stopPropagation();
-    }
-  }
-});
 
 // Функция закрывает модальное окно по клику на overlay или кнопку закрыть.
 setupModalClose(overlay, cancelButton, uploadForm, () => {// 3-м параметром передаем колбэк с очисткой формы и сбрасыванием данных поля загрузки фото.
@@ -118,5 +109,6 @@ uploadForm.addEventListener('submit', (evt) => {
 
 // Открытие модального окна
 uploadFileInput.addEventListener('change', () => {
-  showModal();
+  uploadFileInput.value = '';
+  showModal(overlay);
 });
