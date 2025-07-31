@@ -32,7 +32,6 @@ const cancelButton = document.querySelector('#upload-cancel');
 
 // Функция открывает форму после загрузки фотографии
 const showModal = () => {
-  resetScale();
   pristine.reset(); // Сбрасываем валидацию
   openModal(overlay);
 };

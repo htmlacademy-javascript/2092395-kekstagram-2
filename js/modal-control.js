@@ -54,8 +54,8 @@ const setupModalClose = (modalElement, closeButton, onCloseCallback) => {
     const target = evt.target;
     // Проверяем, что клик был по overlay или крестику
     if (target === modalElement || target === closeButton) {
-      onCloseCallback();
       closeModal(modalElement); // Закрываем модалку
+      onCloseCallback();
     }
   });
 
