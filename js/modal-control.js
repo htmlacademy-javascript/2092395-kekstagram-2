@@ -1,64 +1,74 @@
 import { isEscapeKey } from './util.js';
 
 const body = document.querySelector('body');
-let currentModal;
-// Ф-я открывает модальное окно, котороее передано как параметр
-const openModal = (modalElement) => {
-  // удаляем класс hidden у переданного элемента
+// Переменная для хранения текущего модального окна
+// Присваиваем значение чтобы показать что изначально нет открытого окна
+let currentModal = null;
+// Переменная для хранения функции, которая будет выполняться при закрытии модальногго окна
+let onCloseCallback = null;
+
+// Ф-я ткрытия модального окна
+const openModal = (modalElement, callback) => {
+  // Запоминаем какое окно открыто
   currentModal = modalElement;
+  // Запоминаем какую ф-ю нужно выполнить при закрытии окна
+  onCloseCallback = callback;
+  // Показываем окно
   modalElement.classList.remove('hidden');
-  // тегу body задаем класс modal-open
+  // Блокируем прокрутку страницы
   body.classList.add('modal-open');
-  // добавляем обработчик отслеживания нажатия клавиши Esc
+  // Вешаем обработчик события нажатия копки Escape
   document.addEventListener('keydown', onEscKeyDown);
 };
-// Ф-я закрывает модальное окно, котороее передано как параметр
-const closeModal = (modalElement) => {
-  // Сбрасываем все текстовые поля внутри модального окна
-  const textInputs = modalElement.querySelectorAll('input[type="text"], textarea');
-  textInputs.forEach((input) => {
-    input.value = '';
-  });
 
-  modalElement.classList.add('hidden');
+// Ф-я закрытия модальногоо окна
+const closeModal = () => {
+  // Проверяем есть ли модальное окно
+  if (!currentModal) return;
+  // Скрываем окно
+  currentModal.classList.add('hidden');
+  // Разблокируем прокрутку сстраницы
   body.classList.remove('modal-open');
   // удаляем обработчик отслеживания нажатия клавиши Esc
   document.removeEventListener('keydown', onEscKeyDown);
+  // Выполняет функцию, переданную при открытии
+  if (onCloseCallback) {
+    onCloseCallback();
+  }
+  // Очищаем память
+  currentModal = null;
+  onCloseCallback = null;
 };
 
-// Универсальный обработчик Esc
+// Ф-я обработчик клавиши EScape
 function onEscKeyDown(evt) {
+  // Проверяет нажатие клавиши Esc и что модальное окно открыто
   if (!isEscapeKey(evt) || !currentModal) {
     return;
   }
-
+  // Проверяет где сейчас фокус
   const activeElement = document.activeElement;
-
-  // Проверяем, является ли активный элемент текстовым полем
+  // Проверяет наодится ли текстовое порле в фокусе
   const isTextInput = activeElement.matches('input[type="text"], textarea');
 
-  // Если фокус в текстовом поле внутри текущего модального окна - не закрываем
+  // Если фокус в текстовом поле - не закрывает окно
   if (isTextInput && currentModal.contains(activeElement)) {
     return;
   }
 
   evt.preventDefault();
-  closeModal(currentModal);
+  // Закрывает окно если проверки пройдены
+  closeModal();
 }
-
-// Общая функция для закрытия по клику на overlay или крестик
-// onCloseCallback - колбэк с особенностью закрытия модального окна (form.reset() или clearComments)
-const setupModalClose = (modalElement, closeButton, onCloseCallback) => {
-
+// Настройка закрытия по клику
+const setupModalClose = (modalElement, closeButton, callback) => {
   modalElement.addEventListener('click', (evt) => {
-    const target = evt.target;
-    // Проверяем, что клик был по overlay или крестику
-    if (target === modalElement || target === closeButton) {
-      closeModal(modalElement); // Закрываем модалку
-      onCloseCallback();
+    if (evt.target === modalElement || evt.target === closeButton) {
+      // Выполняет коллбэк, если он есть
+      callback?.();
+      closeModal();
     }
   });
-
 };
 
 export { openModal, closeModal, setupModalClose };

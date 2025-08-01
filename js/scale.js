@@ -5,7 +5,7 @@ const DEFAULT_SCALE = 100;
 
 const smallerButton = document.querySelector('.scale__control--smaller');
 const biggerButton = document.querySelector('.scale__control--bigger');
-const image = document.querySelector('.img-upload__preview');
+const image = document.querySelector('.img-upload__preview img');
 const scaleValue = document.querySelector('.scale__control--value');
 
 // Ф-я масштабирования изображения
@@ -36,7 +36,8 @@ const onBiggerButtonClick = () => {
 };
 
 const resetScale = () => {
-  scaleImage();
+  scaleValue.value = `${DEFAULT_SCALE}%`;
+  image.style.transform = `scale(${DEFAULT_SCALE / 100})`;
 };
 
 // Назначаем обработчики события на соответствующие кнопки
