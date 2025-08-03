@@ -1,5 +1,6 @@
 import { openModal, setupModalClose } from './modal-control.js';
 import { resetScale } from './scale.js';
+import { resetEffects } from './effects.js';
 
 const MAX_HASHTAG_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i; // Проверяет весь хэштег целиком
@@ -34,6 +35,7 @@ const resetForm = () => {
   uploadForm.reset();
   pristine.reset();
   resetScale();
+  resetEffects();
   uploadFileInput.value = '';
 };
 
@@ -112,5 +114,6 @@ uploadForm.addEventListener('submit', (evt) => {
 
 // Открытие модального окна
 uploadFileInput.addEventListener('change', () => {
+  console.log('File input changed');
   showModal();
 });
