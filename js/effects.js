@@ -9,57 +9,50 @@ const sliderElement = document.querySelector('.effect-level__slider');
 // Находим элемент для хранения текущего значения эффекта
 const effectLevel = document.querySelector('.effect-level__value');
 
-// Массив объектов, описывающих доступные фильтры
-const EFFECTS = [
-  {
-    name: 'none',
+const EFFECTS = {
+  "none": {
     min: 0,
     max: 100,
     step: 1,
   },
-  {
-    name: 'chrome',
-    style: 'grayscale',
-    min: 0,
-    max: 1,
-    step: 0.1,
-    unit: '',
-  },
-  {
-    name: 'sepia',
-    style: 'sepia',
-    min: 0,
-    max: 1,
-    step: 0.1,
-    unit: '',
-  },
-  {
-    name: 'marvin',
-    style: 'invert',
+  "chrome": {
+    style: "grayscale",
     min: 0,
     max: 100,
     step: 1,
-    unit: '%',
+    unit: "",
   },
-  {
-    name: 'phobos',
-    style: 'blur',
+  "sepia": {
+    style: "sepia",
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: "",
+  },
+  "marvin": {
+    style: "invert",
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: "%",
+  },
+  "phobos": {
+    style: "blur",
     min: 0,
     max: 3,
     step: 0.1,
-    unit: 'px',
+    unit: "px",
   },
-  {
-    name: 'heat',
-    style: 'brightness',
+  "heat": {
+    style: "brightness",
     min: 1,
     max: 3,
     step: 0.1,
-    unit: '',
+    unit: "",
   },
-];
+};
 
-const DEFAULT_EFFECT = EFFECTS[0]; // Эффект по умолчанию
+const DEFAULT_EFFECT = EFFECTS.none; // Эффект по умолчанию
 let chosenEffect = DEFAULT_EFFECT; // Выбранный эффект
 
 // Проверка на эффект по умолчанию
@@ -88,7 +81,7 @@ const onFormChange = (evt) => {
     return;
   }
   // Ищем выбранный слайдер
-  chosenEffect = EFFECTS.find((effect) => effect.name === evt.target.value);
+  chosenEffect = EFFECTS[evt.target.value];
   updateSlider();
 };
 // Обновляем изображение при изменении слайдера
