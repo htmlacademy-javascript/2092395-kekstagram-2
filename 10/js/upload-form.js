@@ -1,5 +1,6 @@
-import { openModal, closeModal, setupModalClose } from './modal-control.js';
+import { openModal, setupModalClose } from './modal-control.js';
 import { resetScale } from './scale.js';
+import { resetEffects } from './effects.js';
 
 const MAX_HASHTAG_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i; // Проверяет весь хэштег целиком
@@ -30,19 +31,21 @@ const currentErrors = []; // Создаем пустой массив для д�
 // Получили кнопку закрытия формы
 const cancelButton = document.querySelector('#upload-cancel');
 
+const resetForm = () => {
+  uploadForm.reset();
+  pristine.reset();
+  resetScale();
+  resetEffects();
+  uploadFileInput.value = '';
+};
+
 // Функция открывает форму после загрузки фотографии
 const showModal = () => {
-  pristine.reset(); // Сбрасываем валидацию
-  openModal(overlay);
+  openModal(overlay, resetForm);
 };
 
 // Функция закрывает модальное окно по клику на overlay или кнопку закрыть.
-setupModalClose(overlay, cancelButton, () => {// 3-м параметром передаем колбэк с очисткой формы и сбрасыванием данных поля загрузки фото.
-  uploadForm.reset(); // Сбрасываем форму перед закрытием
-  pristine.reset(); // Сбрасываем валидацию
-  resetScale();
-  closeModal(overlay); // Закрываем модалку
-});
+setupModalClose(overlay, cancelButton, resetForm);
 
 // Функция проверяет, является ли строка с тегами (value) валидной
 const validateTags = (value) => {
@@ -111,6 +114,6 @@ uploadForm.addEventListener('submit', (evt) => {
 
 // Открытие модального окна
 uploadFileInput.addEventListener('change', () => {
-  uploadFileInput.value = '';
-  showModal(overlay);
+  console.log('File input changed');
+  showModal();
 });
