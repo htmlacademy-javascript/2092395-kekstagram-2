@@ -10,45 +10,51 @@ const sliderElement = document.querySelector('.effect-level__slider');
 const effectLevel = document.querySelector('.effect-level__value');
 
 const EFFECTS = {
-  "none": {
+  'none': {
+    name: 'none',
     min: 0,
     max: 100,
     step: 1,
   },
-  "chrome": {
-    style: "grayscale",
+  'chrome': {
+    name: 'chrome',
+    style: 'grayscale',
     min: 0,
     max: 100,
     step: 1,
-    unit: "",
+    unit: '',
   },
-  "sepia": {
-    style: "sepia",
+  'sepia': {
+    name: 'sepia',
+    style: 'sepia',
     min: 0,
     max: 100,
     step: 1,
-    unit: "",
+    unit: '',
   },
-  "marvin": {
-    style: "invert",
+  'marvin': {
+    name: 'marvin',
+    style: 'invert',
     min: 0,
     max: 100,
     step: 1,
-    unit: "%",
+    unit: '%',
   },
-  "phobos": {
-    style: "blur",
+  'phobos': {
+    name: 'phobos',
+    style: 'blur',
     min: 0,
     max: 3,
     step: 0.1,
-    unit: "px",
+    unit: 'px',
   },
-  "heat": {
-    style: "brightness",
+  'heat': {
+    name: 'heat',
+    style: 'brightness',
     min: 1,
     max: 3,
     step: 0.1,
-    unit: "",
+    unit: '',
   },
 };
 
@@ -56,7 +62,7 @@ const DEFAULT_EFFECT = EFFECTS.none; // Эффект по умолчанию
 let chosenEffect = DEFAULT_EFFECT; // Выбранный эффект
 
 // Проверка на эффект по умолчанию
-const isDefault = () => chosenEffect === DEFAULT_EFFECT;
+const isDefaultFilter = () => chosenEffect === DEFAULT_EFFECT;
 
 // Ф-я обновляет слайдер
 const updateSlider = () => {
@@ -71,7 +77,7 @@ const updateSlider = () => {
     start: chosenEffect.max,
   });
 
-  if (isDefault()) {
+  if (isDefaultFilter()) {
     sliderFieldset.classList.add('hidden');
   }
 };
@@ -91,13 +97,14 @@ const onSliderUpdate = () => {
   image.className = '';
   effectLevel.value = '';
   // Выходим если поле 'none'
-  if (isDefault()) {
+  if (isDefaultFilter()) {
     return;
   }
   // Применяем фильтр
   const sliderValue = sliderElement.noUiSlider.get();
   image.style.filter = `${chosenEffect.style}(${sliderValue}${chosenEffect.unit})`;
   image.classList.add(`effects__preview--${chosenEffect.name}`);
+  console.log(image.classList);
   effectLevel.value = sliderValue; // Сохраняем значение
 };
 // Сбрасываем эффекты
