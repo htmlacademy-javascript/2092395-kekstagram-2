@@ -2,6 +2,8 @@
 const image = document.querySelector('.img-upload__preview img');
 // Находим форму загрузки изображения
 const uploadForm = document.querySelector('.img-upload__form');
+// Находим элемент, содержащий ползунок (для скрытия/появленния)
+const sliderFieldset = document.querySelector('.img-upload__effect-level');
 // Находим Div в который встроим слайдер
 const sliderElement = document.querySelector('.effect-level__slider');
 // Находим элемент для хранения текущего значения эффекта
@@ -65,7 +67,7 @@ const isDefault = () => chosenEffect === DEFAULT_EFFECT;
 
 // Ф-я обновляет слайдер
 const updateSlider = () => {
-  sliderElement.classList.remove('hidden');
+  sliderFieldset.classList.remove('hidden');
   // Обновляем параметры слайдера
   sliderElement.noUiSlider.updateOptions({
     range: {
@@ -77,7 +79,7 @@ const updateSlider = () => {
   });
 
   if (isDefault()) {
-    sliderElement.classList.add('hidden');
+    sliderFieldset.classList.add('hidden');
   }
 };
 
