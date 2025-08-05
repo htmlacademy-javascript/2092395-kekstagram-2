@@ -45,7 +45,7 @@ const showModal = () => {
 };
 
 // Функция закрывает модальное окно по клику на overlay или кнопку закрыть.
-setupModalClose(overlay, cancelButton, resetForm);
+setupModalClose(overlay, cancelButton);
 
 // Функция проверяет, является ли строка с тегами (value) валидной
 const validateTags = (value) => {
