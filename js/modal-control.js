@@ -63,11 +63,9 @@ function onEscKeyDown(evt) {
   closeModal();
 }
 // Настройка закрытия по клику
-const setupModalClose = (modalElement, closeButton, callback) => {
+const setupModalClose = (modalElement, closeButton) => {
   modalElement.addEventListener('click', (evt) => {
     if (evt.target === modalElement || evt.target === closeButton) {
-      // Выполняет коллбэк, если он есть
-      callback?.();
       closeModal();
     }
   });
