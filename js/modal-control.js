@@ -24,7 +24,9 @@ const openModal = (modalElement, callback) => {
 // Ф-я закрытия модальногоо окна
 const closeModal = () => {
   // Проверяем есть ли модальное окно
-  if (!currentModal) return;
+  if (!currentModal) {
+    return;
+  }
   // Скрываем окно
   currentModal.classList.add('hidden');
   // Разблокируем прокрутку сстраницы
