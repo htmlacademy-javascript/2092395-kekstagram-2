@@ -1,6 +1,8 @@
 import { openModal, setupModalClose } from './modal-control.js';
 import { resetScale } from './scale.js';
 import { resetEffects } from './effects.js';
+import { showAlert } from './util.js';
+import { sendData } from './api.js';
 
 const MAX_HASHTAG_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i; // Проверяет весь хэштег целиком
@@ -11,6 +13,7 @@ const uploadFileInput = document.querySelector('#upload-file'); // Получи�
 const overlay = document.querySelector('.img-upload__overlay'); // Получили overlay
 const hashtagInput = document.querySelector('.text__hashtags'); // Получили поле ввода хэштегов
 const commentInput = document.querySelector('.text__description'); // Получили поле ввода комментариев
+const submitButton = document.querySelector('.img-upload__submit');
 
 // В библиотеку передаем форму, вторым параметром описываем настройки ошибок
 const pristine = new Pristine(uploadForm, {
@@ -104,16 +107,40 @@ uploadForm.addEventListener('input', (evt) => {
   pristine.validate(evt.target);
 });
 
-// Обработчик отправки формы при валидных данных
-uploadForm.addEventListener('submit', (evt) => {
-  const isValid = pristine.validate();
-  if (!isValid) {
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Сохраняю...';
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Сохранить';
+};
+
+const setOnFormSubmit = (onSuccess) => {
+
+  // Обработчик отправки формы при валидных данных
+  uploadForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-  }
-});
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+        },
+        () => showAlert('Не удалось отправить форму. Попробуйте еще раз'),
+        new FormData(evt.target),
+      );
+    }
+  });
+};
 
 // Открытие модального окна
 uploadFileInput.addEventListener('change', () => {
-  console.log('File input changed');
   showModal();
 });
+
+export { setOnFormSubmit };
