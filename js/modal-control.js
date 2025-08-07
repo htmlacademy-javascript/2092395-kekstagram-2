@@ -1,70 +1,72 @@
 import { isEscapeKey } from './util.js';
 
 const body = document.querySelector('body');
-const hashtagInput = document.querySelector('.text__hashtags');
-const commentInput = document.querySelector('.text__description');
-const commentInputBigPicture = document.querySelector('.social__footer-text');
+// Переменная для хранения текущего модального окна
+// Присваиваем значение чтобы показать что изначально нет открытого окна
+let currentModal = null;
+// Переменная для хранения функции, которая будет выполняться при закрытии модальногго окна
+let onCloseCallback = null;
 
-
-// Ф-я открывает модальное окно, котороее передано как параметр
-const openModal = (modalElement) => {
-  // удаляем класс hidden у переданного элемента
+// Ф-я ткрытия модального окна
+const openModal = (modalElement, callback) => {
+  // Запоминаем какое окно открыто
+  currentModal = modalElement;
+  // Запоминаем какую ф-ю нужно выполнить при закрытии окна
+  onCloseCallback = callback;
+  // Показываем окно
   modalElement.classList.remove('hidden');
-  // тегу body задаем класс modal-open
+  // Блокируем прокрутку страницы
   body.classList.add('modal-open');
-  // добавляем обработчик отслеживания нажатия клавиши Esc
+  // Вешаем обработчик события нажатия копки Escape
   document.addEventListener('keydown', onEscKeyDown);
 };
-// Ф-я закрывает модальное окно, котороее передано как параметр
-const closeModal = (modalElemen) => {
-  modalElemen.classList.add('hidden');
+
+// Ф-я закрытия модальногоо окна
+const closeModal = () => {
+  // Проверяем есть ли модальное окно
+  if (!currentModal) {
+    return;
+  }
+  // Скрываем окно
+  currentModal.classList.add('hidden');
+  // Разблокируем прокрутку сстраницы
   body.classList.remove('modal-open');
   // удаляем обработчик отслеживания нажатия клавиши Esc
   document.removeEventListener('keydown', onEscKeyDown);
+  // Выполняет функцию, переданную при открытии
+  if (onCloseCallback) {
+    onCloseCallback();
+  }
+  // Очищаем память
+  currentModal = null;
+  onCloseCallback = null;
 };
 
-// Ф-я закрывает модальное окно при нажатии Esc
+// Ф-я обработчик клавиши EScape
 function onEscKeyDown(evt) {
-  if (isEscapeKey(evt)) { // Проверяем, нажатая кнопка это Esc
-    const activeElement = document.activeElement;
-    // Проверяем какое модальное окно активно
-    const bigPictureModal = document.querySelector('.big-picture:not(.hidden)');
-    const uploadForm = document.querySelector('.img-upload__overlay:not(.hidden)');
-    // Для формы: не закрывать если фокус в поле комментария
-    if (uploadForm) {
-      // Находим активные инпуты
-      const isInputFocused = activeElement === hashtagInput || activeElement === commentInput;
-
-      if (isInputFocused) {
-        return;
-      }
-    }
-
-    // Для просмотра фото: не закрывать если фокус в поле комментария
-    if (bigPictureModal) {
-      const isCommentFocused = activeElement === commentInputBigPicture;
-      if (isCommentFocused) {
-        return;
-      }
-    }
-
-    evt.preventDefault();
-    const activeModal = bigPictureModal || uploadForm;
-    if (activeModal) {
-      closeModal(activeModal);
-    }
+  // Проверяет нажатие клавиши Esc и что модальное окно открыто
+  if (!isEscapeKey(evt) || !currentModal) {
+    return;
   }
-}
+  // Проверяет где сейчас фокус
+  const activeElement = document.activeElement;
+  // Проверяет наодится ли текстовое порле в фокусе
+  const isTextInput = activeElement.matches('input[type="text"], textarea');
 
-// Общая функция для закрытия по клику на overlay или крестик
-// closeParam - колбэк с особенностью закрытия модального окна (form.reset() или clearComments)
-const setupModalClose = (modalElement, closeButton, closeParam) => {
+  // Если фокус в текстовом поле - не закрывает окно
+  if (isTextInput && currentModal.contains(activeElement)) {
+    return;
+  }
+
+  evt.preventDefault();
+  // Закрывает окно если проверки пройдены
+  closeModal();
+}
+// Настройка закрытия по клику
+const setupModalClose = (modalElement, closeButton) => {
   modalElement.addEventListener('click', (evt) => {
-    const target = evt.target;
-    // Проверяем, что клик был по overlay или крестику
-    if (target === modalElement || target === closeButton) {
-      closeModal(modalElement); // Закрываем модалку
-      closeParam();
+    if (evt.target === modalElement || evt.target === closeButton) {
+      closeModal();
     }
   });
 };
