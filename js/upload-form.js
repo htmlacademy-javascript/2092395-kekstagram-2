@@ -1,8 +1,8 @@
 import { openModal, setupModalClose } from './modal-control.js';
 import { resetScale } from './scale.js';
 import { resetEffects } from './effects.js';
-import { showAlert } from './util.js';
 import { sendData } from './api.js';
+import { showSuccessMessage, showErrorMessage } from './messages.js';
 
 const MAX_HASHTAG_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i; // Проверяет весь хэштег целиком
@@ -40,11 +40,6 @@ const resetForm = () => {
   resetScale();
   resetEffects();
   uploadFileInput.value = '';
-};
-
-// Функция открывает форму после загрузки фотографии
-const showModal = () => {
-  openModal(overlay, resetForm);
 };
 
 // Функция закрывает модальное окно по клику на overlay или кнопку закрыть.
@@ -118,29 +113,36 @@ const unblockSubmitButton = () => {
 };
 
 const setOnFormSubmit = (onSuccess) => {
-
-  // Обработчик отправки формы при валидных данных
-  uploadForm.addEventListener('submit', (evt) => {
+  uploadForm.addEventListener('submit', async (evt) => {
     evt.preventDefault();
 
-    const isValid = pristine.validate();
-    if (isValid) {
-      blockSubmitButton();
-      sendData(
+    if (!pristine.validate()) {
+      return;
+    }
+
+    blockSubmitButton();
+
+    try {
+      await sendData(
         () => {
           onSuccess();
-          unblockSubmitButton();
+          showSuccessMessage();
         },
-        () => showAlert('Не удалось отправить форму. Попробуйте еще раз'),
-        new FormData(evt.target),
+        () => {
+          showErrorMessage();
+        },
+        new FormData(evt.target)
       );
+    } finally {
+      unblockSubmitButton();
     }
   });
 };
 
-// Открытие модального окна
+// Инициализация формы
 uploadFileInput.addEventListener('change', () => {
-  showModal();
+  openModal(overlay, resetForm);
+  setupModalClose(overlay, cancelButton);
 });
 
 export { setOnFormSubmit };
