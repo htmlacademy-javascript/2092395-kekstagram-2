@@ -113,7 +113,7 @@ const unblockSubmitButton = () => {
 };
 
 const setOnFormSubmit = (onSuccess) => {
-  uploadForm.addEventListener('submit', async (evt) => {
+  uploadForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     if (!pristine.validate()) {
@@ -122,20 +122,17 @@ const setOnFormSubmit = (onSuccess) => {
 
     blockSubmitButton();
 
-    try {
-      await sendData(
-        () => {
-          onSuccess();
-          showSuccessMessage();
-        },
-        () => {
-          showErrorMessage();
-        },
-        new FormData(evt.target)
-      );
-    } finally {
+      sendData(
+      () => {
+        onSuccess();
+        showSuccessMessage();
+      },
+      () => {
+        showErrorMessage();
+      },
+      new FormData(evt.target)
+    );
       unblockSubmitButton();
-    }
   });
 };
 
