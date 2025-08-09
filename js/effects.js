@@ -47,8 +47,7 @@ const EFFECTS = {
   },
 };
 
-const DEFAULT_EFFECT = EFFECTS.none; // Эффект по умолчанию
-let chosenEffect = DEFAULT_EFFECT; // Выбранный эффект
+let chosenEffect = EFFECTS.none; // Выбранный эффект - начальный
 
 // Находим изображение, к которому будут применяться фильтры
 const image = document.querySelector('.img-upload__preview img');
@@ -62,7 +61,7 @@ const sliderElement = document.querySelector('.effect-level__slider');
 const effectLevel = document.querySelector('.effect-level__value');
 
 // Проверка на эффект по умолчанию
-const isDefaultFilter = () => chosenEffect === DEFAULT_EFFECT;
+const isDefaultFilter = () => chosenEffect === EFFECTS.none;
 
 const resetImageStyles = () => {
   image.style.filter = 'none';
@@ -109,18 +108,18 @@ const onSliderUpdate = () => {
 
 // Сбрасываем эффекты
 const resetEffects = () => {
-  chosenEffect = DEFAULT_EFFECT;
+  chosenEffect = EFFECTS.none;
   updateSlider();
 };
 
 // Инициализация слайдера
 noUiSlider.create(sliderElement, {
   range: {
-    min: DEFAULT_EFFECT.min,
-    max: DEFAULT_EFFECT.max,
+    min: EFFECTS.none.min,
+    max: EFFECTS.none.max,
   },
-  start: DEFAULT_EFFECT.max,
-  step: DEFAULT_EFFECT.step,
+  start: EFFECTS.none.max,
+  step: EFFECTS.none.step,
   connect: 'lower',
 });
 
