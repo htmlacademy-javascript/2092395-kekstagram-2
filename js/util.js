@@ -10,8 +10,18 @@ const getRandomArrayElement = (array) =>
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
+// Функция ограничивает частоту вызовов
+const debounce = (callback, timeoutDelay = 500) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
 export {
   getRandomPositiveInteger,
   getRandomArrayElement,
   isEscapeKey,
+  debounce,
 };
