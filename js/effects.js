@@ -47,8 +47,7 @@ const EFFECTS = {
   },
 };
 
-const DEFAULT_EFFECT = EFFECTS.none; // Эффект по умолчанию
-let chosenEffect = DEFAULT_EFFECT; // Выбранный эффект
+let chosenEffect = EFFECTS.none; // Выбранный эффект - начальный
 
 // Находим изображение, к которому будут применяться фильтры
 const image = document.querySelector('.img-upload__preview img');
@@ -62,7 +61,7 @@ const sliderElement = document.querySelector('.effect-level__slider');
 const effectLevel = document.querySelector('.effect-level__value');
 
 // Проверка на эффект по умолчанию
-const isDefaultFilter = () => chosenEffect === DEFAULT_EFFECT;
+const isDefaultFilter = () => chosenEffect === EFFECTS.none;
 
 const resetImageStyles = () => {
   image.style.filter = 'none';
@@ -101,26 +100,41 @@ const onFormChange = (evt) => {
 
 // Обновляем изображение при изменении слайдера
 const onSliderUpdate = () => {
-  // Применяем фильтр
   const sliderValue = sliderElement.noUiSlider.get();
+  let formattedValue;
+
+  if (chosenEffect.unit === '%') {
+    formattedValue = parseInt(sliderValue, 10);
+  } else {
+    // Изменяем форматирование для эффектов без процентов
+    formattedValue = parseFloat(sliderValue);
+    // Если значение целое - выводим без десятичных знаков
+    if (Number.isInteger(formattedValue)) {
+      formattedValue = formattedValue.toString();
+    } else {
+      // Иначе оставляем один десятичный знак
+      formattedValue = formattedValue.toFixed(1);
+    }
+  }
+
   image.style.filter = `${chosenEffect.style}(${sliderValue}${chosenEffect.unit})`;
-  effectLevel.value = sliderValue; // Сохраняем значение
+  effectLevel.value = formattedValue;
 };
 
 // Сбрасываем эффекты
 const resetEffects = () => {
-  chosenEffect = DEFAULT_EFFECT;
+  chosenEffect = EFFECTS.none;
   updateSlider();
 };
 
 // Инициализация слайдера
 noUiSlider.create(sliderElement, {
   range: {
-    min: DEFAULT_EFFECT.min,
-    max: DEFAULT_EFFECT.max,
+    min: EFFECTS.none.min,
+    max: EFFECTS.none.max,
   },
-  start: DEFAULT_EFFECT.max,
-  step: DEFAULT_EFFECT.step,
+  start: EFFECTS.none.max,
+  step: EFFECTS.none.step,
   connect: 'lower',
 });
 

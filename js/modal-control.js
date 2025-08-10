@@ -48,6 +48,13 @@ function onEscKeyDown(evt) {
   if (!isEscapeKey(evt) || !currentModal) {
     return;
   }
+
+  // Проверяем, есть ли активные сообщения (error/success)
+  const activeMessage = document.querySelector('.error, .success');
+  if (activeMessage) {
+    return; // Если есть сообщение - не закрываем форму
+  }
+
   // Проверяет где сейчас фокус
   const activeElement = document.activeElement;
   // Проверяет наодится ли текстовое порле в фокусе
