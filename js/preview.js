@@ -4,6 +4,7 @@ const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const fileChooser = document.querySelector('#upload-file');
 // Находим элемент, который будет показывать изображение
 const preview = document.querySelector('.img-upload__preview img');
+const previewEffects = document.querySelectorAll('.effects__preview');
 
 // Подписываемся на изменение поля загрузки фотографии
 fileChooser.addEventListener('change', () => {
@@ -12,12 +13,17 @@ fileChooser.addEventListener('change', () => {
   // Используем свойство в котором хранится имя файла
   const fileName = file.name.toLowerCase();
   // Проверяем, оканчивается ли имя файла одним из допустимых расширений.
-  const matches = FILE_TYPES.some((it) => {
-    return fileName.endsWith(it); // true или false
-  });
+  const matches = FILE_TYPES.some((it) =>
+    fileName.endsWith(it) // true или false
+  );
 
   if (matches) {
+    const url = URL.createObjectURL(file);
     // Используем стандартный метод для созданияссылки файла, ссылку добавляе в preview
-    preview.src = URL.createObjectURL(file);
+    preview.src = url;
+    previewEffects.forEach((item) => {
+      item.style.backgroundImage = `url(${url})`;
+    });
   }
 });
+

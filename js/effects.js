@@ -100,10 +100,25 @@ const onFormChange = (evt) => {
 
 // Обновляем изображение при изменении слайдера
 const onSliderUpdate = () => {
-  // Применяем фильтр
   const sliderValue = sliderElement.noUiSlider.get();
+  let formattedValue;
+
+  if (chosenEffect.unit === '%') {
+    formattedValue = parseInt(sliderValue, 10);
+  } else {
+    // Изменяем форматирование для эффектов без процентов
+    formattedValue = parseFloat(sliderValue);
+    // Если значение целое - выводим без десятичных знаков
+    if (Number.isInteger(formattedValue)) {
+      formattedValue = formattedValue.toString();
+    } else {
+      // Иначе оставляем один десятичный знак
+      formattedValue = formattedValue.toFixed(1);
+    }
+  }
+
   image.style.filter = `${chosenEffect.style}(${sliderValue}${chosenEffect.unit})`;
-  effectLevel.value = sliderValue; // Сохраняем значение
+  effectLevel.value = formattedValue;
 };
 
 // Сбрасываем эффекты

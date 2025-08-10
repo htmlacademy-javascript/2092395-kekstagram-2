@@ -113,7 +113,7 @@ const unblockSubmitButton = () => {
 };
 
 const setOnFormSubmit = (onSuccess) => {
-  uploadForm.addEventListener('submit', (evt) => {
+  uploadForm.addEventListener('submit', async (evt) => {
     evt.preventDefault();
 
     if (!pristine.validate()) {
@@ -122,17 +122,26 @@ const setOnFormSubmit = (onSuccess) => {
 
     blockSubmitButton();
 
-      sendData(
-      () => {
-        onSuccess();
-        showSuccessMessage();
-      },
-      () => {
-        showErrorMessage();
-      },
-      new FormData(evt.target)
-    );
+    try {
+      await new Promise((resolve, reject) => {
+        sendData(
+          () => {
+            onSuccess();
+            showSuccessMessage();
+            resolve(); // Явное разрешение Promise
+          },
+          () => {
+            showErrorMessage();
+            reject(new Error('Upload failed')); // Явное отклонение
+          },
+          new FormData(evt.target)
+        );
+      });
+    } catch (error) {
+      // Ошибка уже обработана в showErrorMessage()
+    } finally {
       unblockSubmitButton();
+    }
   });
 };
 

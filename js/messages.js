@@ -45,6 +45,7 @@ const showMessage = (type, text = '') => {
 
   function onEscDown(evt) {
     if (isEscapeKey(evt)) {
+      evt.stopPropagation();
       evt.preventDefault();
       hideMessage();
     }
