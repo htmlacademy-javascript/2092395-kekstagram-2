@@ -1,7 +1,11 @@
+// Константы масштабирования
 const SCALE_STEP = 25;
 const MIN_SCALE = 25;
 const MAX_SCALE = 100;
 const DEFAULT_SCALE = 100;
+const CSS_SCALE_FACTOR = 100;
+const BASE_SCALE_VALUE = 1;
+const NUMERAL_SYSTEM = 10;
 
 const smallerButton = document.querySelector('.scale__control--smaller');
 const biggerButton = document.querySelector('.scale__control--bigger');
@@ -10,13 +14,13 @@ const scaleValue = document.querySelector('.scale__control--value');
 
 // Ф-я масштабирования изображения
 const scaleImage = (value = DEFAULT_SCALE) => {
-  image.style.transform = `scale(${value / 100})`; // Делим на 100 т.к. в CSS 1= 100%
+  image.style.transform = `scale(${value / CSS_SCALE_FACTOR})`;
   scaleValue.value = `${value}%`; // Обновляем значение в поле
 };
 
 // Ф-я уменьшает масштаб изображения
 const onSmallerButtonClick = () => {
-  const currentValue = parseInt(scaleValue.value, 10); // Получаем текущее значение
+  const currentValue = parseInt(scaleValue.value, NUMERAL_SYSTEM); // Получаем текущее значение
   let newValue = currentValue - SCALE_STEP; // Уменьшаем на шаг
   // Проверяем, чтобы не выйти за минимальный масштаб
   if (newValue < MIN_SCALE) {
@@ -27,7 +31,7 @@ const onSmallerButtonClick = () => {
 };
 // Ф-я увеличивает масштаб изображения
 const onBiggerButtonClick = () => {
-  const currentValue = parseInt(scaleValue.value, 10);
+  const currentValue = parseInt(scaleValue.value, NUMERAL_SYSTEM);
   let newValue = currentValue + SCALE_STEP;
   if (newValue > MAX_SCALE) {
     newValue = MAX_SCALE;
@@ -37,7 +41,7 @@ const onBiggerButtonClick = () => {
 
 const resetScale = () => {
   scaleValue.value = `${DEFAULT_SCALE}%`;
-  image.style.transform = `scale(${DEFAULT_SCALE / 100})`;
+  image.style.transform = `scale(${BASE_SCALE_VALUE})`;
 };
 
 // Назначаем обработчики события на соответствующие кнопки
